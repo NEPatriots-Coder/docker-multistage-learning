@@ -1,0 +1,32 @@
+# Documentation
+*.pdf
+*.doc
+*.docx
+*.md
+!README.md
+docs/
+documentation/
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Build and binary files
+bin/
+dist/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool
+*.out
+
+# Dependency directories
+vendor/
