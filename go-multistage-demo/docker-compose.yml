@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  # Go API
+  go-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - ENV=production
+    restart: unless-stopped
+    networks:
+      - go-network
+
+  # Go API (bad version for comparison)
+  go-api-bad:
+    build:
+      context: .
+      dockerfile: Dockerfile.bad
+    ports:
+      - "8081:8080"
+    environment:
+      - ENV=development
+    networks:
+      - go-network
+
+  # Supporting services
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6380:6379"
+    networks:
+      - go-network
+
+networks:
+  go-network:
+    driver: bridge
