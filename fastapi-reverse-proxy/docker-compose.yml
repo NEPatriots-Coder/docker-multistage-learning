@@ -1,0 +1,49 @@
+services:
+  # FastAPI Application
+  api:
+    build:
+      context: ./api
+      target: development
+    ports:
+      - "8000:8000"  # Direct access for development
+    environment:
+      - SECRET_KEY=${SECRET_KEY:-thisisatestsecretkey}
+      - REDIS_URL=${REDIS_URL:-redis://redis:6379}
+    volumes:
+      - ./api:/app
+    depends_on:
+      - redis
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  # Nginx Reverse Proxy
+  nginx:
+    build: ./nginx
+    ports:
+      - "80:80"      # HTTP
+      - "443:443"    # HTTPS
+    depends_on:
+      - api
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  # Redis Cache
+  redis:
+    image: redis:8.0.1-bookworm
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - app-network
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+
+volumes:
+  redis_data:
+
+networks:
+  app-network:
+    driver: bridge
